@@ -23,7 +23,7 @@ client.on('message', function (incomingTopic, message) {
         const data = JSON.parse(message.toString());
         document.getElementById("status").textContent = data.status.toUpperCase();
         document.getElementById("temperature").textContent = `${data.temperature} °C`;
-        document.getElementById("progress").textContent = formatSecondsToTime(data.printigProgress);
+        document.getElementById("progress").textContent = formatSecondsToTime(data.progress);
         time.innerText = `Last update: ${getCurrentTime()}`;
     } catch (e) {
         console.error("JSON parsing error:", e);
