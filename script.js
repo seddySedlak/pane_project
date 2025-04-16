@@ -1,7 +1,7 @@
 const connection = document.getElementById('connection');
 const nameOfTopic = document.getElementById('topic');
 const time = document.getElementById('time');
-const client = mqtt.connect('ws://broker.emqx.io:8083/mqtt');
+const client = mqtt.connect('wss://broker.emqx.io:8083/mqtt');
 const broker = "broker.emqx.io"
 const topic = 'eps32_3dprinter_13579';
 
