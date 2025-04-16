@@ -24,7 +24,8 @@ client.on('message', function (incomingTopic, message) {
         document.getElementById("status").textContent = data.status.toUpperCase();
         document.getElementById("temperature").textContent = `${data.temperature} °C`;
         document.getElementById("progress").textContent = formatSecondsToTime(data.progress);
-        time.innerText = `Last update: ${getCurrentTime()}`;
+        time.innerText = `Last update: ${getCurrentTime()}`; 
+        // TODO: send the time of sending the message to json via esp and call it in js        
     } catch (e) {
         console.error("JSON parsing error:", e);
     }
