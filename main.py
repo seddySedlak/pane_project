@@ -38,7 +38,7 @@ def publish(client):
         time.sleep(1)
         msg = b"messages: %d" % msg_count
         try:
-            client.publish(topic, msg)
+            client.publish(topic, msg, retain="true")
             print(f"Odesláno `{msg}` na topic `{topic.decode()}`")
         except Exception as e:
             print("Chyba při odesílání:", e)
