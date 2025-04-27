@@ -1,6 +1,5 @@
 const connection = document.getElementById('connection');
 const nameOfTopic = document.getElementById('topic');
-const time = document.getElementById('time');
 const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
 const broker = "broker.emqx.io"
 const topic = 'eps32_3dprinter_13579';
@@ -22,9 +21,10 @@ client.on('message', function (incomingTopic, message) {
     try {
         const data = JSON.parse(message.toString());
         document.getElementById("status").textContent = data.status.toUpperCase();
-        document.getElementById("temperature").textContent = `${data.temperature} °C`;
+        document.getElementById("nozzle").textContent = `${data.nozzle} °C`;
+        document.getElementById("base").textContent = `${data.base} °C`;
         document.getElementById("progress").textContent = formatSecondsToTime(data.progress);
-        time.innerText = `Last update: ${getCurrentTime()}`; 
+        document.getElementById('time').textContent = `Last update: ${data.update}`; 
         // TODO: send the time of sending the message to json via esp and call it in js        
     } catch (e) {
         console.error("JSON parsing error:", e);
@@ -38,12 +38,4 @@ function formatSecondsToTime(seconds) {
     const hh = hrs.toString().padStart(2, "0");
     const mm = mins.toString().padStart(2, "0");
     return `${hh}:${mm}`;
-}
-
-// Returns current time as a formatted "HH:MM" string
-function getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
 }
