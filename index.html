@@ -1,41 +1,49 @@
-const connection = document.getElementById('connection');
-const nameOfTopic = document.getElementById('topic');
-const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
-const broker = "broker.emqx.io"
-const topic = 'eps32_3dprinter_13579';
-
-//Connect to mqtt
-client.on('connect', function () {
-    connection.innerText = `Connected to ${broker}`;
-    client.subscribe(topic, function (err) {
-        if (!err) {
-            nameOfTopic.innerText = topic;
-        } else {
-            nameOfTopic.innerText = 'Error in subscribed topic\n';
-        }
-    });
-});
-
-//Sending data
-client.on('message', function (incomingTopic, message) {
-    try {
-        const data = JSON.parse(message.toString());
-        document.getElementById("status").textContent = data.status.toUpperCase();
-        document.getElementById("nozzle").textContent = `${data.nozzle} °C`;
-        document.getElementById("base").textContent = `${data.base} °C`;
-        document.getElementById("progress").textContent = formatSecondsToTime(data.progress);
-        document.getElementById('time').textContent = `Last update: ${data.update}`; 
-        // TODO: send the time of sending the message to json via esp and call it in js        
-    } catch (e) {
-        console.error("JSON parsing error:", e);
-    }
-});
-
-// Converts time in seconds to a formatted "HH:MM" string
-function formatSecondsToTime(seconds) {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const hh = hrs.toString().padStart(2, "0");
-    const mm = mins.toString().padStart(2, "0");
-    return `${hh}:${mm}`;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MQTT Subscriber</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="img/bot_profile.webp">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+    <section class="box">
+        <header>
+            <img src="img/bot_profile.webp" alt="bot profile icon">
+            <h1>Printer live data</h1>
+            <p id="connection">Waiting for connection...</p>
+            <p>Subscribed topic: <span id="topic"></span></p>
+            <p id="time"></p>
+        </header>
+        <main>
+            <section class="data">
+                <div class="card1 card">
+                    <small>Status</small>
+                    <h2 id="status"></h2>
+                </div>
+                <div class="card2 card">
+                    <small>Nozzle</small>
+                    <h2 id="nozzle"></h2>
+                </div>
+                <div class="card2 card">
+                    <small>Base</small>
+                    <h2 id="base"></h2>
+                </div>
+                <div class="card3 card">
+                    <small>Printing progress</small>
+                    <h2 id="progress"></h2>
+                </div>
+            </section>
+        </main>
+    </section>
+    <footer>
+        <div class="copy">
+            <p><a href="">Tomas Sedlak</a> | <a href="">Helena Sperlova</a></p>
+        </div>
+    </footer>   
+    
+    <script src="script.js"></script>
+</body>
+</html>
