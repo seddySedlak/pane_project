@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
 *{
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 body{
     font-family: "Exo", sans-serif;
@@ -10,9 +10,9 @@ body{
     align-items: center;
     flex-direction: column;
     height: 100vh;
-    gap: 20px;
     background-color: hsl(0, 0%, 8%);
     color: white;
+    gap: 5px;
 }
 header, main, footer {
     display: flex;
@@ -20,7 +20,7 @@ header, main, footer {
     align-items: center;
 }
 header {
-    gap: 5px;
+    gap: 2px;
 }
 header img {
     width: 100px;
@@ -34,7 +34,7 @@ header img {
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 5px;
 }
 .card{
     display: flex;
@@ -64,5 +64,7 @@ header img {
 .copy a{
     text-decoration: none;
     color: white;
+}
+.copy{
     font-size: 10px;
 }
