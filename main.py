@@ -1,67 +1,94 @@
-import time
+import machine
+from machine import UART
 import network
 import urequests
-import ujson
-import machine
-from umqtt.simple import MQTTClient
 
-# Připojení k Wi-Fi
-ssid = 'xxx'
-password = 'xxx'
-webhook_url = 'xxx'
-
-wifi = network.WLAN(network.STA_IF)
-wifi.active(True)
-wifi.connect(ssid, password)
-
-while not wifi.isconnected():
-    print("Připojuji se k WiFi...")
-    time.sleep(1)
-
-print("WiFi připojeno:", wifi.ifconfig())
-
-# MQTT nastavení
-broker = 'broker.emqx.io'
-port = 1883
-topic = b"eps32_3dprinter_13579"
-client_id = b"esp32_" + machine.unique_id()
-
-def connect_mqtt():
-    client = MQTTClient(client_id, broker, port)
-    client.connect()
-    print("Připojeno k MQTT brokeru!")
-    return client
-
-def publish(client):
-    msg_count = 1
-    while True:
-        time.sleep(1)
-        msg = b"messages: %d" % msg_count
+# reading data from printer
+def readDataFromUart():
+    uart = UART(2, 115200)
+    #uart = UART(2, baudrate=115200, tx=17, rx=16)
+    for i in range(5):
+    # while True:
         try:
-            client.publish(topic, msg, retain="true")
-            print(f"Odesláno `{msg}` na topic `{topic.decode()}`")
+            # temperature
+            uart.write("M105")
+            # uart.write(b"M105\n")
+            time.sleep(0.5)
+            if uart.any():
+                data_temp = uart.readline()
+                print("temp: ", data_temp)
+                if data_temp:
+                    temp = data_temp.decode().strip()
+                else:
+                    temp = "error/temp"
+                    print("Zadna odpoved")
+            else:
+                print("UART ticho")
+
+            # progress
+            uart.write("M27")
+            # uart.write(b"M27\n")
+            time.sleep(0.5)
+            if uart.any():
+                data_progress = uart.readline()
+                print("progress: ",data_progress)
+                if data_progress:
+                    progress = data_progress.decode().strip()
+                else:
+                    temp = "error/progress"
+                    print("Zadna odpoved")
+            else:
+                print("UART ticho")
+
+            # print time
+            uart.write("M31")
+            # uart.write(b"M31\n")
+            time.sleep(0.5)
+            if uart.any():
+                data_time = uart.readline()
+                print("time: ", data_time)
+                if data_time:
+                    print_time = data_time.decode().strip()
+                else:
+                    temp = "error/time"
+                    print("Zadna odpoved")
+            else:
+                print("UART ticho")
+
+            print("Teplota:", temp)
+            print("Progress:", progress)
+            print("Cas tisku:", print_time)
+            sendDataToDiscord(temp, progress, print_time)
+
         except Exception as e:
-            print("Chyba při odesílání:", e)
-        msg_count += 1
-        if msg_count > 5:
-            break
-def discord():
+            print("Chyba:", e)
+        time.sleep(10)
+
+def connectToWifi():
+    ssid = 'heha'
+    password = 'Mrkev007'
+
+    wifi = network.WLAN(network.STA_IF)
+    wifi.active(True)
+    wifi.connect(ssid, password)
+
+    while not wifi.isconnected():
+        print("Připojuji se k WiFi...")
+        time.sleep(1)
+    print("WiFi připojeno:", wifi.ifconfig())
+
+def sendDataToDiscord(temp, progress, print_time):
+    webhook_url = 'https://discord.com/api/webhooks/1358380001757499613/N2qtyS8NYqWkQY-4anMT1tEEz-AlMeNS2MIR8ZUW14JiofTtWaia7oBbfK3htELnIitP'
     headers = {'Content-Type': 'application/json'}
-    zprava = f'Teplota tiskove hlavy:tady bude vstupni parametr'  # <-- změněno
+    zprava = f"ESP32:\nTeplota: `{temp}`\nProgress: `{progress}`\nCas tisku: `{print_time}`"
     data = {'content': zprava}
     try:
         response = urequests.post(webhook_url, headers=headers, data=ujson.dumps(data))
-        print("Status kód:", response.status_code)
-        print("Odpověď:", response.text)
+        print("Odeslano na Discord")
         response.close()
     except Exception as e:
-        print("Chyba při odesílání:", e)
+        print("Chyba pri odesilani na Discord:", e)
 
-def run():
-    client = connect_mqtt()
-    publish(client)
-    discord()
-    client.disconnect()
 
-run()
-
+connectToWifi()
+readDataFromUart()
