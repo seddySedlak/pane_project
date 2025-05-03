@@ -1,4 +1,4 @@
-# 🖨️ ESP32 3D Printer Data Sender
+# 🖨️ Raspberry Pi 3 3D Printer Data Sender
 
 > **A microcontroller-based project for reading data from a 3D printer and sending it via Discord and MQTT using an Raspberry Pi 3.**
 
