@@ -12,7 +12,7 @@ WAIT_INTERVAL = 3
 GCODE_COMMANDS = ["M31", "M105", "M27"]
 
 # ↓ In the WEBHOOK constant you can change the discord webhook url ↓
-WEBHOOK = "https://discord.com/api/webhooks/1358380001757499613/N2qtyS8NYqWkQY-4anMT1tEEz-AlMeNS2MIR8ZUW14JiofTtWaia7oBbfK3htELnIitP"
+WEBHOOK = "your_webhook_url"
 MQTT_BROKER = "broker.emqx.io"
 MQTT_PORT = 1883
 MQTT_TOPIC = "eps32_3dprinter_13579"
