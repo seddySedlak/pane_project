@@ -48,4 +48,4 @@ This project focuses on connecting an **Raspberry Pi 3** to a **3D printer** in 
 ## 🌐 Live Data Dashboard
 
 Want to see it in action? You can view the live data coming from the printer on this webpage:  
-👉 [https://seddysedlak.github.io/pane_project/](https://seddysedlak.github.io/pane_project/)
+👉 [https://seddysedlak.github.io/Real-time-3D-printer-monitor/](https://seddysedlak.github.io/Real-time-3D-printer-monitor/)
